@@ -3,7 +3,7 @@ JPA (Java Persistent API)
 It's a popular **Spring Data** project.
 JPA is available to Spring Boot applications with the JPA starter
 
-## Define an JPA entity
+## Define an JPA entity(Example)
 We have an example who to use tags to define JPA entities and mapping these.
 
 We define a relationship between three POJOs Book, Author and Publisher, after we added the following constraints:
@@ -111,6 +111,16 @@ public class Publisher {
   private Set<Book> books = new HashSet<>();
   ...
 }
+```
+
+## Tools
+To enable **H2 console** add on *src/main/resources/application.properties* the following line:
+```bash
+spring.h2.console.enabled=true
+```
+check also the configuration on logs(example):
+```bash
+2022-07-07 15:32:43.951  INFO 27496 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:0553886f-fe7f-4381-9047-1a9d8ca9feef'
 ```
 
 ## More information

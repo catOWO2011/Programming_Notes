@@ -25,4 +25,4 @@ asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdasdfasdfasdfasdfasdfasdfasdfa
 
 
 
-1. ## What is Redux
+## 1. What is Redux

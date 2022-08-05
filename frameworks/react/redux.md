@@ -4,7 +4,7 @@
 
 | No. | Subject |
 |-----|---------|
-|1| [What is Redux?](#what-is-redux) |
+|1| [What is Redux?](#1-what-is-redux) |
 
 asdf
 asdf

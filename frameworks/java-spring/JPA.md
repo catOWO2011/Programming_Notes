@@ -1,9 +1,24 @@
 # JPA
+
+# Table Contents
+* [Concept](#concept)
+* [Requirements](#requirements)
+* [Define an JPA entity(Example)](#define-an-jpa-entityexample)
+* [Tools](#tools)
+* [More information](#more-information)
+
+## Concept
 JPA (Java Persistent API)
 It's a popular **Spring Data** project.
 JPA is available to Spring Boot applications with the JPA starter
 
-## Define an JPA entity(Example)
+## Requirements
+
+* Dependencies and select **Spring Data JPA** and then **H2 Database**.
+* JPA entity needs a default constructor or zero args constructor, you do not use it directly, so it is designated as ``protected``.
+* JPA entity is annotated with ``@Entity``, indicating that it is a JPA entity.
+
+## Define an JPA entity(Example Guru)
 We have an example who to use tags to define JPA entities and mapping these.
 
 We define a relationship between three POJOs Book, Author and Publisher, after we added the following constraints:
@@ -114,17 +129,22 @@ public class Publisher {
 ```
 
 ## Tools
+### H2 console
+
 To enable **H2 console** add on *src/main/resources/application.properties* the following line:
 ```bash
 spring.h2.console.enabled=true
 ```
+After this you will be able to access to the ``h2 console`` in the following ip ``http://localhost:8080/h2-console`` in your work environment
+![h2 console preview](./jpa-assets/h2-console-preview.png)
+
 check also the configuration on logs(example):
-```bash
-2022-07-07 15:32:43.951  INFO 27496 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:0553886f-fe7f-4381-9047-1a9d8ca9feef'
-```
+![spring log application](./jpa-assets/h2-console-config.png)
+You must set this configuration ``jdbc:h2:mem:11609618-ac7c-463f-ba53-b7a81ea16f98`` on the ``JDBC URL`` field on the login form, and click on ``connect``.
 
 ## More information
 * [Spring Data projects](https://spring.io/projects/spring-data)
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 * [Hibernate User Guide Annotations](https://docs.jboss.org/hibernate/orm/6.1/userguide/html_single/Hibernate_User_Guide.html#annotations)
 * [Annotation Type ManyToMany](https://javaee.github.io/javaee-spec/javadocs/javax/persistence/ManyToMany.html)
+* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)

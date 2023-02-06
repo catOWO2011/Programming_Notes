@@ -7,6 +7,7 @@
 [What is Redux?](#what-is-redux) |
 [State Management](#state-managment) |
 [Redux Thunk](#redux-thunk)
+[Redux Saga]
 
 ## What is Redux
 **Redux is a pattern and library for managing and updating application state, using events called "actions"**. It serves as a centralized store for state that needs to be across your entire application, with rules ensuring that the state can only updated in a predictable fashion.
@@ -30,4 +31,5 @@ A thunk function is a function that accepts two arguments:
 
 Thunk functions are not directly called by application code. Instead, they are passed to `store.dispatch()`.
 
-
+## Redux Saga
+``Redux Saga`` is a library that aims to make application side effects(i.e. asynchronous things like data fetching and impure things like accessing the browser cache) easier to manage, more efficient to execute, easy to test, and better at handling failures.

@@ -3,7 +3,8 @@
 # Content
 
 * [HTML Structure](#html-structure)
-* [Metadata]
+* [Metadata](#metadata)
+* [User Inputs and Forms]
 
 ## HTML Structure
 **Basic HTML page structure**
@@ -122,3 +123,10 @@ It's important when designing responsive web pages.
   </body>
 </html>
 ```
+
+## User Inputs and Forms
+We use forms to capture input from the user.
+**Form Validation**
+It's a process that ensures that data is valid and conforms to defined rules.There are two methods of form validation:
+* Client-side validation
+* Server-side validation

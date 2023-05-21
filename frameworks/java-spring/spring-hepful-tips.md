@@ -236,4 +236,3 @@ public class StudentController {
 * [Include message attribute for errors, allowing the client side having more information](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#application-properties.server.server.error.include-message)
 * [Custom Error Handling](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#web.servlet.spring-mvc.error-handling)
 * [Validation in Spring Boot - validate fields on server side](https://www.baeldung.com/spring-boot-bean-validation)
-* []

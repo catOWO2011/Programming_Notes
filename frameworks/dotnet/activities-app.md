@@ -85,7 +85,7 @@ The configuration files are:
 * `API/appsettings.Development.json`
 * `API/appsettings.json`
 
-Chage our file `API\appsettings.Development.json`:
+Change our file `API\appsettings.Development.json`:
 ```json
 {
   "Logging": {
@@ -184,6 +184,10 @@ namespace Persistence
   }
 }
 ```
+|<span style="color:purple">Definition</span>|
+|---|
+|<span style="color:purple">A DbContext instance represents a session with the database and can be used to query and save instances of your entities. DbContext is a combination of the Unit Of Work and Repository patterns.</span> *[Details+](https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-7.0)*|
+
 We need to execute the following on the level where is our `Reactivities.sln` file that's the root folder
 ```bash
 dotnet restore
@@ -211,13 +215,47 @@ builder.Services.AddDbContext<DataContext>(opt =>
 
 var app = builder.Build();
 ```
+As you can see we're going to use postgres so we need a place to save our database like a container:
+```bash
+docker run --name postgres-demo -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest
+```
+
 To generate the schema we're going to need to install the following [tool](https://www.nuget.org/packages/dotnet-ef). Chech the running `.NET` version matches the following command (you can get this line from the tool website).
 ```bash
 dotnet tool install --global dotnet-ef --version 7.0.12
 ```
+Once you installed this tool if you write on the console `dotnet ef` the content below will be displayed.
+![dotnet-info](./dotnet-ef-info.png)
 
 Install from Nuget gallery `Microsoft.EntityFrameworkCore.Design` into our `API` project
 ![entity-framework-core-design](./entity-framework-core-design.png)
+After this our API.csproj will look like this:
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+
+</Project>
+
+```
+With the `Microsoft.EntityFrameworkCore.Design` added.
 
 Once this is done now we can do our first migration
 ```bash
@@ -246,7 +284,183 @@ catch (Exception ex)
 }
 ...
 ```
-Now we execute the following command:
+Now we execute the following command in the startert project(`API/` folder) to create the database:
 ```bash
 dotnet watch
+```
+We'll have the following result
+![create-database](./create-database.png)
+
+Now we need put some data in our table so we're going to create `Seed.cs` file to set data into our `Persistence` folder.
+```cs
+using Domain;
+
+namespace Persistence
+{
+  public class Seed
+  {
+    public static async Task SeedData(DataContext context)
+    {
+      if (context.Activities.Any()) return;
+
+      var activities = new List<Activity>
+            {
+                new Activity
+                {
+                    Title = "Past Activity 1",
+                    Date = DateTime.UtcNow.AddMonths(-2),
+                    Description = "Activity 2 months ago",
+                    Category = "drinks",
+                    City = "London",
+                    Venue = "Pub",
+                },
+                new Activity
+                {
+                    Title = "Past Activity 2",
+                    Date = DateTime.UtcNow.AddMonths(-1),
+                    Description = "Activity 1 month ago",
+                    Category = "culture",
+                    City = "Paris",
+                    Venue = "Louvre",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 1",
+                    Date = DateTime.UtcNow.AddMonths(1),
+                    Description = "Activity 1 month in future",
+                    Category = "culture",
+                    City = "London",
+                    Venue = "Natural History Museum",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 2",
+                    Date = DateTime.UtcNow.AddMonths(2),
+                    Description = "Activity 2 months in future",
+                    Category = "music",
+                    City = "London",
+                    Venue = "O2 Arena",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 3",
+                    Date = DateTime.UtcNow.AddMonths(3),
+                    Description = "Activity 3 months in future",
+                    Category = "drinks",
+                    City = "London",
+                    Venue = "Another pub",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 4",
+                    Date = DateTime.UtcNow.AddMonths(4),
+                    Description = "Activity 4 months in future",
+                    Category = "drinks",
+                    City = "London",
+                    Venue = "Yet another pub",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 5",
+                    Date = DateTime.UtcNow.AddMonths(5),
+                    Description = "Activity 5 months in future",
+                    Category = "drinks",
+                    City = "London",
+                    Venue = "Just another pub",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 6",
+                    Date = DateTime.UtcNow.AddMonths(6),
+                    Description = "Activity 6 months in future",
+                    Category = "music",
+                    City = "London",
+                    Venue = "Roundhouse Camden",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 7",
+                    Date = DateTime.UtcNow.AddMonths(7),
+                    Description = "Activity 2 months ago",
+                    Category = "travel",
+                    City = "London",
+                    Venue = "Somewhere on the Thames",
+                },
+                new Activity
+                {
+                    Title = "Future Activity 8",
+                    Date = DateTime.UtcNow.AddMonths(8),
+                    Description = "Activity 8 months in future",
+                    Category = "film",
+                    City = "London",
+                    Venue = "Cinema",
+                }
+            };
+
+      await context.Activities.AddRangeAsync(activities);
+      await context.SaveChangesAsync();
+    }
+  }
+}
+```
+We're going to modify our `Program.cs` in `API`
+```cs
+var services = scope.ServiceProvider;
+
+try
+{
+    ...
+    await Seed.SeedData(context);//This is the line we need
+}
+```
+We need to run the following command that is better in the following way:
+```bash
+dotnet watch --no-hot-reload
+```
+Once the migration is done, we need to add our first controller, so we need to create a`API/Controllers/BaseApiController.cs`file:
+```cs
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BaseApiController : ControllerBase
+    {
+        
+    }
+}
+```
+Remove the `this` keyword generated during the process to use `_`
+![extensions-with-underscode-settings](./extensions-with-underscode-settings.png)
+After this we're going to create our next one `API/Controllers/ActivitiesController.cs`:
+```cs
+using Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
+namespace API.Controllers
+{
+    public class ActivitiesController : BaseApiController
+    {
+        private readonly DataContext _context;
+        public ActivitiesController(DataContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet] // api/activities
+        public async Task<ActionResult<List<Activity>>> GetActivities()
+        {
+            return await _context.Activities.ToListAsync();
+        }
+
+        [HttpGet("{id}")] // api/activities/12321activity
+        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        {
+            return await _context.Activities.FindAsync(id);
+        }
+    }
+}
 ```

@@ -464,3 +464,227 @@ namespace API.Controllers
     }
 }
 ```
+Now we have our basic api done, and we can start a repository with git.
+```bash
+git init
+```
+Add a gitignore
+```
+dotnet new gitignore
+```
+After this we just add the following file name `appsettings`, since we can have third parties keys, into our gitignore file:
+```bash
+## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+appsettings.json
+
+# User-specific files
+```
+once this is done create a repository on github and follow the steps after git commit.
+
+When we need to enable CORS do the following in the `API/Program.cs`, [check about adding policy](https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0#cors-with-named-policy-and-middleware).
+```cs
+    opt.UseNpgsql(connectionString);
+});
+builder.Services.AddCors(opt => {
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.(middleware)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+app.UseCors("CorsPolicy");
+
+app.UseAuthorization();
+```
+
+## Creating a CRUD applicaton using the CQRS + Mediator pattern
+
+We need to install the MediatR nugget inside the Application.csproj
+![mediatr](./mediatr.png)
+
+We're going to add `Application\Activities\List.cs`
+```cs
+using Domain;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
+namespace Application.Activities
+{
+  public class List
+  {
+    public class Query : IRequest<List<Activity>> { }
+
+    public class Handler : IRequestHandler<Query, List<Activity>>
+    {
+      private readonly DataContext _context;
+      public Handler(DataContext context)
+      {
+        _context = context;
+
+      }
+      public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+      {
+        return await _context.Activities.ToListAsync();
+      }
+    }
+  }
+}
+```
+We need to modify our `API\Controllers\ActivitiesController.cs` controller adding mediator:
+```cs
+using Application.Activities;
+using Domain;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
+namespace API.Controllers
+{
+    public class ActivitiesController : BaseApiController
+    {
+        private readonly IMediator _mediator;
+        public ActivitiesController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpGet] // api/activities
+        public async Task<ActionResult<List<Activity>>> GetActivities()
+        {
+            return await _mediator.Send(new List.Query());
+        }
+
+        [HttpGet("{id}")] // api/activities/123adfa
+        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        {
+            return Ok();
+        }
+    }
+}
+```
+We need to tell our application(`API\Program.cs`) about mediator, **we just and one handler and the others will be added automatically**:
+```cs
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    });
+});
+// Adding Mediator
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
+
+var app = builder.Build();
+```
+We can make our controller's code thin by moving our logic from `ActivitiesController` to `BaseApiController`:
+```cs
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BaseApiController : ControllerBase
+    {
+        private IMediator _mediator;
+
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();
+    }
+}
+```
+```cs
+using Application.Activities;
+using Domain;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
+namespace API.Controllers
+{
+    public class ActivitiesController : BaseApiController
+    {
+        [HttpGet] // api/activities
+        public async Task<ActionResult<List<Activity>>> GetActivities()
+        {
+            return await Mediator.Send(new List.Query());
+        }
+
+        [HttpGet("{id}")] // api/activities/123adfa
+        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        {
+            return Ok();
+        }
+    }
+}
+```
+With this all above we get just the Activities, now we need to get just one Activity details, we need to build a `Application\Activities\Details.cs`:
+```cs
+using Domain;
+using MediatR;
+using Persistence;
+
+namespace Application.Activities
+{
+    public class Details
+    {
+        public class Query : IRequest<Activity>
+        {
+            public Guid Id { get; set; }
+        }
+
+        public class Handler : IRequestHandler<Query, Activity>
+        {
+            private readonly DataContext _context;
+            public Handler(DataContext context)
+            {
+                _context = context;
+
+            }
+            public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+            {
+                return await _context.Activities.FindAsync(request.Id);
+            }
+        }
+    }
+}
+```
+After this we need to modify our `API\Controllers\ActivitiesController.cs`:
+```cs
+using Application.Activities;
+using Domain;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
+namespace API.Controllers
+{
+    public class ActivitiesController : BaseApiController
+    {
+        [HttpGet] // api/activities
+        public async Task<ActionResult<List<Activity>>> GetActivities()
+        {
+            return await Mediator.Send(new List.Query());
+        }
+
+        [HttpGet("{id}")] // api/activities/123adfa
+        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        {
+            return await Mediator.Send(new Details.Query{Id = id});
+        }
+    }
+}
+```

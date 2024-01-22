@@ -688,3 +688,5 @@ namespace API.Controllers
     }
 }
 ```
+We need to map properties comming from the request we need:
+![automapper](./automapper.png)

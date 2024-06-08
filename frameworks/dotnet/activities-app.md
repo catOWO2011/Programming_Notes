@@ -215,10 +215,13 @@ builder.Services.AddDbContext<DataContext>(opt =>
 
 var app = builder.Build();
 ```
+Also you need to set the environment variables in the following file:
+![env-variables](env-variables-api.png)
 As you can see we're going to use postgres so we need a place to save our database like a container:
 ```bash
-docker run --name postgres-demo -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest
+docker run --name reactivities-database -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest
 ```
+Remember to create a database that match the `DATABASE_NAME` value in our case `reactivities`.
 
 To generate the schema we're going to need to install the following [tool](https://www.nuget.org/packages/dotnet-ef). Chech the running `.NET` version matches the following command (you can get this line from the tool website).
 ```bash
@@ -257,14 +260,14 @@ After this our API.csproj will look like this:
 ```
 With the `Microsoft.EntityFrameworkCore.Design` added.
 
-Once this is done now we can do our first migration
+Once this is done now we can do our first migration. this is going to create your first table named `Activities`.
 ```bash
 dotnet ef migrations add InitialCreate -s API -p Persistence
 ```
 After execute the previous command we're going to have the following `Migrations` directory.
 ![migrations-folder](./migrations-folder.png)
 
-We need to create the Database so we need to add this code in `Project`
+We need to create the our first table `Activities` so we need to add this code in `Project`
 ```cs
 ...
 app.MapControllers();
@@ -284,6 +287,7 @@ catch (Exception ex)
 }
 ...
 ```
+The code above is build with [Apply migrations at runtime](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 Now we execute the following command in the startert project(`API/` folder) to create the database:
 ```bash
 dotnet watch

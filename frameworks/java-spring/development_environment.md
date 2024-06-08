@@ -83,6 +83,11 @@ Java version: 11.0.14.1, vendor: Amazon.com Inc., runtime: /usr/lib/jvm/java-11-
 Default locale: en_US, platform encoding: UTF-8
 OS name: "linux", version: "5.4.0-113-generic", arch: "amd64", family: "unix"
 ```
+#### Installing Gradle
+In File Explorer right-click on the This PC (or Computer) icon, then click Properties -> Advanced System Settings -> Environmental Variables.
+
+Under System Variables select Path, then click Edit. Add an entry for `C:\Gradle\gradle-8.6\bin`. Click OK to save.
+[More info](https://gradle.org/install/)
 #### Gradle
 ```bash
 gradle --version
@@ -112,3 +117,8 @@ Setup java version
 ## How to open a project created with spring initializr using intellij
 
 We need to take the files from the zip and open a project from intellij selection the **pom.xml** file
+
+## How to setup Lombok
+If you wanna use Lombok install the plugin and select the following configuration on intellij.
+![lombok-setup](setup-environment-assets/lombok-intellij-setup.png)
+![lombok-plugin](setup-environment-assets/lombok-plugin.png)

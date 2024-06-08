@@ -1,6 +1,12 @@
 # HTML
 
-## Convert a Design From Figma to HTML
+## Absolute vs Relative Units
 
-Convert the `pixels` to `rem` (Font-size-relative units)
-* rem	Font size of the root element (default is 16px).
+`pixel` is an absolute unit.
+
+`rem` is a relative unit.
+
+## Em vs Rem
+
+* `em` units calculate their size from their parents (closest parent element), normally use this for `padding, margin`.
+* `rem` units calculate their size from the root html font size otherwise it takes the browser by default it's 16px, use this for `typography`.

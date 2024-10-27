@@ -5,6 +5,7 @@
 2. [Using amazon corretto](#amazon-corretto)
 3. [Setup Maven for intellij](#setup-maven-for-intellij)
 4. [How to open a project created with spring initializr using intellij](#how-to-open-a-project-created-with-spring-initializr-using-intellij)
+5. [Environment variables in spring](#environment-variables)
 
 ## What do you need for spring ?
 You need the following tools
@@ -122,3 +123,6 @@ We need to take the files from the zip and open a project from intellij selectio
 If you wanna use Lombok install the plugin and select the following configuration on intellij.
 ![lombok-setup](setup-environment-assets/lombok-intellij-setup.png)
 ![lombok-plugin](setup-environment-assets/lombok-plugin.png)
+
+## Environment Variables
+If you wanna setup env variables on Spring Boot you can follow [this](https://www.youtube.com/watch?v=PmGLn3ua_lU&t=712s).

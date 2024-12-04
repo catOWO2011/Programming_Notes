@@ -63,9 +63,10 @@ $ mv apache-maven-3.8.6 /opt/
 Set the following configuration on the ``.profile`` file
 ```bash
 # maven java configuration
-JAVA_HOME='/usr/lib/jvm/java-17-amazon-corretto'
-PATH="$JAVA_HOME/bin:$PATH"
-export PATH
+# JAVA_HOME='/usr/lib/jvm/java-17-amazon-corretto'
+# PATH="$JAVA_HOME/bin:$PATH"
+# export PATH
+# add the following information above if it's necessary
 M2_HOME='/opt/apache-maven-3.8.6'
 PATH="$M2_HOME/bin:$PATH"
 export PATH
@@ -83,6 +84,7 @@ Java version: 11.0.14.1, vendor: Amazon.com Inc., runtime: /usr/lib/jvm/java-11-
 Default locale: en_US, platform encoding: UTF-8
 OS name: "linux", version: "5.4.0-113-generic", arch: "amd64", family: "unix"
 ```
+[More info](https://www.digitalocean.com/community/tutorials/install-maven-linux-ubuntu)
 #### Installing Gradle
 In File Explorer right-click on the This PC (or Computer) icon, then click Properties -> Advanced System Settings -> Environmental Variables.
 

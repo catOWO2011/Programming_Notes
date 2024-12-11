@@ -17,6 +17,10 @@ If you have this error:
 We need to follow the next step:
 * Run ``bcdedit /set hypervisorlaunchtype off`` to disable hypervisor Close the command prompt after   executing the commands and restart the system.
 
+## Move Docker data where images and containers on Windows
+When we want to move the storage location for containers and images check the **Disk image location** use the configuration below. [More](https://docs.docker.com/desktop/settings-and-maintenance/settings/#advanced)
+![disk-image-location](./disk-image-location.png)
+
 
 ## Move Docker data directory to another location on ubuntu
 
